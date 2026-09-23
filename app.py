@@ -75,7 +75,10 @@ Output: 피곤해서😵 일찍🏃‍♂️잤어💤
 
 
 # --- 스크롤 방지 콤팩트 UI ---
-st.markdown("### ✨ 이모지가 가득해")
+st.markdown(
+    "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨이모지가 가득해✨</p>", 
+    unsafe_allow_html=True
+)
 st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!🔍")
 
 user_input = st.text_area(
