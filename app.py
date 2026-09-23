@@ -99,26 +99,27 @@ if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
     time_passed = current_time - st.session_state.last_submit_time
     cooldown_seconds = 5 # 5초 쿨다운
 
+    clean_input = user_input.strip()
+
     if time_passed < cooldown_seconds:
         remaining_time = cooldown_seconds - time_passed
-        alert_msg = safe_box.warning(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
-        time.sleep(2)      # 2초 동안 화면에 유지합니다.
-        alert_msg.empty()  
-    elif user_input.strip():
-        if len(user_input) > 300:
+        st.toast(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
+
+    elif not clean_input:
+        st.toast("문장을 입력해주세요!")
+
+    else:
+        if len(clean_input) > 300:
             st.toast("🚨 300자가 넘는 문장은 앞부분만 잘라서 변환합니다!")
-            user_input = user_input[:300]
+            clean_input = clean_input[:300]
+            
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
-                new_result = process_full_sentence(user_input)
+                new_result = process_full_sentence(clean_input)
                 st.session_state["result_area"] = new_result
                 st.session_state.result_text = new_result
 
         st.session_state.last_submit_time = time.time()
-    else:
-        warning_msg = safe_box.warning("문장을 입력해주세요!")
-        time.sleep(2)      # 💡 2초 동안 화면에 유지합니다
-        warning_msg.empty()
 
 if st.session_state.get("result_text"):
     st.markdown("**👇 변환 결과**")
@@ -128,7 +129,7 @@ if st.session_state.get("result_text"):
         edited_text = st.text_area(
             "결과창",
             label_visibility="collapsed",
-            height=120,
+            height=140,
             key="result_area",
         )
     with col2:
