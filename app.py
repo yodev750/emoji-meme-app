@@ -92,7 +92,7 @@ user_input = st.text_area(
 # 💡 4. 기존 max_chars 대신, 텍스트 입력창 바로 아래에 예쁜 카운터 띄우기
 current_length = len(st.session_state.my_text_input)
 st.markdown(
-    f"<div style='text-align: right; font-size: 0.8rem; color: gray; margin-top: -10px; margin-bottom: 10px;'>{current_length} / 200</div>", 
+    f"<div style='text-align: right; font-size: 0.8rem; color: gray; margin-top: -10px; margin-bottom: 10px;'>{current_length} / 300</div>", 
     unsafe_allow_html=True
 )
 
