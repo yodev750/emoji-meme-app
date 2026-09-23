@@ -88,12 +88,13 @@ if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
         safe_box.warning(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
 
     elif user_input.strip():
-        st.session_state.last_submit_time = current_time
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
                 new_result = process_full_sentence(user_input)
                 st.session_state["result_area"] = new_result
                 st.session_state.result_text = new_result
+
+        st.session_state.last_submit_time = time.time()
     else:
         safe_box.warning("문장을 입력해주세요!")
 
