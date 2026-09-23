@@ -85,8 +85,9 @@ if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
 
     if time_passed < cooldown_seconds:
         remaining_time = cooldown_seconds - time_passed
-        safe_box.warning(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
-
+        alert_msg = safe_box.warning(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
+        time.sleep(2)      # 2초 동안 화면에 유지합니다.
+        alert_msg.empty()  
     elif user_input.strip():
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
@@ -96,7 +97,9 @@ if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
 
         st.session_state.last_submit_time = time.time()
     else:
-        safe_box.warning("문장을 입력해주세요!")
+        warning_msg = safe_box.warning("문장을 입력해주세요!")
+        time.sleep(2)      # 💡 2초 동안 화면에 유지합니다
+        warning_msg.empty()
 
 if st.session_state.get("result_text"):
     st.markdown("**👇 변환 결과**")
