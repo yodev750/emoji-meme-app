@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 from st_copy_to_clipboard import st_copy_to_clipboard
 from google import genai
 from google.genai import types
@@ -55,6 +56,7 @@ Output: 피곤해서😵 일찍🏃‍♂️잤어💤
         else:
             return f"🚨 에러 발생!!!! 잠시 후 다시 시도해주세요 😭"
 
+
 # --- 스크롤 방지 콤팩트 UI ---
 st.markdown("### ✨ 이모지가 가득해")
 st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!🔍")
@@ -62,19 +64,31 @@ st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!�
 user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
-    placeholder="변환할 문장을 입력하세요 (예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
+    placeholder="변환할 문장을 입력하세요 최대 100자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
     height=68, 
-    max_chars=200
+    max_chars=100
 )
+
+if "last_submit_time" not in st.session_state:
+    st.session_state.last_submit_time = 0
 
 if "result_text" not in st.session_state:
     st.session_state.result_text = ""
 
 if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
-    # 세이프 박스 120px 유지
-    safe_box = st.container(height=40, border=False)
-    
-    if user_input.strip():
+    # 세이프 박스 60px 유지
+    safe_box = st.container(height=60, border=False)
+
+    current_time = time.time()
+    time_passed = current_time - st.session_state.last_submit_time
+    cooldown_seconds = 5 # 5초 쿨다운
+
+    if time_passed < cooldown_seconds:
+        remaining_time = cooldown_seconds - time_passed
+        safe_box.warning(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
+
+    elif user_input.strip():
+        st.session_state.last_submit_time = current_time
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
                 new_result = process_full_sentence(user_input)
