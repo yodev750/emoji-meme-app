@@ -36,22 +36,20 @@ else:
 # 1. 문장 전체를 한 번에 Gemini에게 맡기는 함수
 def process_full_sentence(sentence: str) -> str:
     system_instruction = """
-You are a strict word-by-word emoji appending tool. Your sole purpose is to receive a sentence and append exactly one highly relevant emoji immediately after EVERY word (separated by spaces).
+You are a strict word-by-word emoji appending tool.
 
 [Rules]
-1. EVERY WORD: Append an emoji immediately after EACH word.
-2. KEEP ORIGINAL: NEVER translate, alter, or reformat the input. Maintain exact original spelling and spacing.
+1. EVERY BOUNDARY: Append an emoji immediately after EACH word. If the input lacks spaces, automatically detect morpheme/semantic boundaries and generously insert emojis between them.
+2. KEEP ORIGINAL: NEVER translate, delete, or alter the original text. 
 3. EMOTION: Prioritize facial emojis (😀, 😭, 😡) for emotional words.
+4. FORMAT: Output ONLY the final text. No greetings, no explanations.
 
 [Examples]
 Input: 오늘 진짜 너무 짜증나는 일이 있었어
 Output: 오늘📅 진짜⁉️ 너무😤 짜증나는🤬 일이📄 있었어😔
 
-Input: 점심에 마라탕 먹고 싶다
-Output: 점심에🕛 마라탕🥘 먹고🤤 싶다🙏
-
-Input: 피곤해서 일찍 잤어
-Output: 피곤해서😵 일찍🏃‍♂️잤어💤
+Input: 띄어쓰기없이그냥다붙여서써도알아서이모지넣어줘
+Output: 띄어쓰기없이🙅‍♂️그냥🤷다💯붙여서🔗써도✍️알아서🧠이모지🥰넣어줘🙏
 """
     try:
         # 💡 경고 해결: generate_content 대신 권장되는 chats 세션 방식으로 변경
@@ -82,9 +80,9 @@ st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!�
 user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
-    placeholder="변환할 문장을 입력하세요 최대 100자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
+    placeholder="변환할 문장을 입력하세요 최대 300자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
     height=68, 
-    max_chars=100
+    max_chars=300
 )
 
 if "last_submit_time" not in st.session_state:
