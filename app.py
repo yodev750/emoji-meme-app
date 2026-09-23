@@ -106,7 +106,7 @@ with btn_col2:
     st.button("초기화", on_click=clear_text, use_container_width=True)
 
 if submit_btn:
-    safe_box = st.container(height=120, border=False)
+    safe_box = st.container(height=45, border=False)
     
     current_time = time.time()
     time_passed = current_time - st.session_state.last_submit_time
@@ -115,21 +115,15 @@ if submit_btn:
 
     if time_passed < cooldown_seconds:
         remaining_time = int(cooldown_seconds - time_passed)
-        alert_msg = safe_box.error(f"🚨 앗! 변환 후 {cooldown_seconds}초가 지나야 합니다. ({remaining_time}초 남음)")
-        time.sleep(2)
-        alert_msg.empty()
+        st.toast(f"🚨 앗! 변환 후 {cooldown_seconds}초가 지나야 합니다. ({remaining_time}초 남음)")
         
     elif not clean_input:
-        warning_msg = safe_box.warning("문장을 입력해주세요!")
-        time.sleep(2)
-        warning_msg.empty()
+        st.toast("문장을 입력해주세요!")
         
     else:
         if len(clean_input) > 300:
-            len_warning = safe_box.warning("🚨 300자가 넘는 텍스트는 앞부분만 잘라서 변환합니다!")
+            st.toast("🚨 300자가 넘는 텍스트는 앞부분만 잘라서 변환합니다!")
             clean_input = clean_input[:300]
-            time.sleep(2)
-            len_warning.empty()
             
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
@@ -141,19 +135,20 @@ if submit_btn:
 
 # --- 4. 결과 출력 영역 ---
 if st.session_state.get("result_text"):
-    # 가로 정렬을 위한 컬럼 분할 (텍스트와 복사 버튼)
-    header_col1, header_col2 = st.columns([2, 8])
+    st.markdown("<div style='margin-top: 10px; font-weight: bold;'>👇 변환 결과</div>", unsafe_allow_html=True)
     
-    with header_col1:
-        st.markdown("<div style='margin-top: 10px; font-weight: bold;'>👇 변환 결과</div>", unsafe_allow_html=True)
-        
-    with header_col2:
-        current_result = st.session_state.get("result_area", st.session_state.result_text)
-        st_copy_to_clipboard(current_result, before_copy_label="📋 복사")
-    
+    # 1. 텍스트 에디터(결과창)를 먼저 화면 가로 전체 크기로 배치
     st.text_area(
         "결과창",
         label_visibility="collapsed",
         height=120,
         key="result_area",
     )
+    
+    # 2. 결과창 바로 아래, 왼쪽 정렬로 복사 버튼을 배치하기 위해 컬럼 분할
+    copy_col1, copy_col2 = st.columns([3, 7]) # 버튼이 너무 좁아 보이면 3:7 비율 추천
+    
+    with copy_col1:
+        # 3. 화면에 있는 최신 결과 텍스트를 가져와서 복사 버튼과 연결
+        current_result = st.session_state.get("result_area", st.session_state.result_text)
+        st_copy_to_clipboard(current_result, before_copy_label="📋 복사")
