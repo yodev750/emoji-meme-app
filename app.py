@@ -86,7 +86,7 @@ if "result_text" not in st.session_state:
 user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
-    placeholder="문장을 입력하면 이모지가 듬뿍 들어간 밈으로 변환됩니다! (최대 300자)",
+    placeholder="문장을 입력하면 이모지가 듬뿍 들어가도록 변환됩니다! (최대 300자)",
     height=120, 
     max_chars=1500,
     key="input_text",
