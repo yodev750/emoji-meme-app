@@ -76,7 +76,6 @@ st.markdown(
 )
 st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!🔍")
 
-# 💡 1. 텍스트 지우기를 위해 'input_text' 세션 상태 추가
 if "input_text" not in st.session_state:
     st.session_state.input_text = ""
 if "last_submit_time" not in st.session_state:
@@ -84,24 +83,21 @@ if "last_submit_time" not in st.session_state:
 if "result_text" not in st.session_state:
     st.session_state.result_text = ""
 
-# 넉넉한 글자 제한으로 복사/붙여넣기 튕김 방지
 user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
-    placeholder="변환할 문장을 입력하세요 (최대 300자까지만 변환됩니다 / 긴 글 복붙 환영!)",
+    placeholder="나도 나중에 초면에 말투 개같으시네요 라고 말하고싶을 때 한번 참고 이렇게 말해야지",
     height=120, 
     max_chars=1500,
-    key="input_text",  # 💡 2. 입력창을 위 세션 상태와 연결
+    key="input_text",
 )
 
-# --- 3. 버튼 동작 및 안전장치 로직 ---
-
-# 💡 3. 초기화(지우기) 버튼을 눌렀을 때 실행될 함수
+# --- 3. 버튼 동작 (이모티콘 넣기 & 초기화) ---
 def clear_text():
     st.session_state.input_text = ""
     st.session_state.result_text = ""
 
-# 버튼 영역을 4:1 비율로 나란히 배치
+# 4:1 비율로 버튼 나란히 배치
 btn_col1, btn_col2 = st.columns([4, 1])
 
 with btn_col1:
@@ -109,14 +105,12 @@ with btn_col1:
 with btn_col2:
     st.button("초기화", on_click=clear_text, use_container_width=True)
 
-# 기존 st.button 부분 대신 submit_btn을 확인
 if submit_btn:
-    safe_box = st.container(height=60, border=False)
+    safe_box = st.container(height=120, border=False)
     
     current_time = time.time()
     time_passed = current_time - st.session_state.last_submit_time
     cooldown_seconds = 5
-
     clean_input = user_input.strip()
 
     if time_passed < cooldown_seconds:
@@ -147,22 +141,19 @@ if submit_btn:
 
 # --- 4. 결과 출력 영역 ---
 if st.session_state.get("result_text"):
-    # 💡 1. '👇 변환 결과' 글씨와 '복사' 버튼을 한 줄(가로)에 나란히 배치
-    header_col, copy_col = st.columns([4, 1])
+    # 가로 정렬을 위한 컬럼 분할 (텍스트와 복사 버튼)
+    header_col1, header_col2 = st.columns([2, 8])
     
-    with header_col:
-        # 버튼과 높이를 예쁘게 맞추기 위해 HTML로 약간의 여백을 추가했습니다.
+    with header_col1:
         st.markdown("<div style='margin-top: 10px; font-weight: bold;'>👇 변환 결과</div>", unsafe_allow_html=True)
         
-    with copy_col:
-        # 결과창에 있는 텍스트 내용을 복사합니다.
+    with header_col2:
         current_result = st.session_state.get("result_area", st.session_state.result_text)
         st_copy_to_clipboard(current_result, before_copy_label="📋 복사")
     
-    # 💡 2. 결과 텍스트창은 화면 전체 너비로 넓게 씁니다.
     st.text_area(
         "결과창",
         label_visibility="collapsed",
-        height=150,
+        height=120,
         key="result_area",
     )
