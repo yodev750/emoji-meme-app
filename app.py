@@ -64,6 +64,7 @@ user_input = st.text_area(
     label_visibility="collapsed",
     placeholder="변환할 문장을 입력하세요 (예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
     height=68, 
+    max_chars=200
 )
 
 if "result_text" not in st.session_state:
