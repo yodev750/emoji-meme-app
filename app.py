@@ -105,13 +105,13 @@ def clear_text():
 btn_col1, btn_col2 = st.columns([4, 1])
 
 with btn_col1:
-    submit_btn = st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True)
+    submit_btn = st.button("이모티콘 듬뿍 넣기", use_container_width=True)
 with btn_col2:
-    st.button("🔄 지우기", on_click=clear_text, use_container_width=True)
+    st.button("초기화", on_click=clear_text, use_container_width=True)
 
 # 기존 st.button 부분 대신 submit_btn을 확인
 if submit_btn:
-    safe_box = st.container(height=120, border=False)
+    safe_box = st.container(height=60, border=False)
     
     current_time = time.time()
     time_passed = current_time - st.session_state.last_submit_time
@@ -145,16 +145,24 @@ if submit_btn:
                 
         st.session_state.last_submit_time = time.time()
 
+# --- 4. 결과 출력 영역 ---
 if st.session_state.get("result_text"):
-    st.markdown("**👇 변환 결과**")
+    # 💡 1. '👇 변환 결과' 글씨와 '복사' 버튼을 한 줄(가로)에 나란히 배치
+    header_col, copy_col = st.columns([4, 1])
     
-    col1, col2 = st.columns([5, 1])
-    with col1:
-        edited_text = st.text_area(
-            "결과창",
-            label_visibility="collapsed",
-            height=180,
-            key="result_area",
-        )
-    with col2:
-        st_copy_to_clipboard(edited_text, before_copy_label="📋 복사")
+    with header_col:
+        # 버튼과 높이를 예쁘게 맞추기 위해 HTML로 약간의 여백을 추가했습니다.
+        st.markdown("<div style='margin-top: 10px; font-weight: bold;'>👇 변환 결과</div>", unsafe_allow_html=True)
+        
+    with copy_col:
+        # 결과창에 있는 텍스트 내용을 복사합니다.
+        current_result = st.session_state.get("result_area", st.session_state.result_text)
+        st_copy_to_clipboard(current_result, before_copy_label="📋 복사")
+    
+    # 💡 2. 결과 텍스트창은 화면 전체 너비로 넓게 씁니다.
+    st.text_area(
+        "결과창",
+        label_visibility="collapsed",
+        height=150,
+        key="result_area",
+    )
