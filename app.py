@@ -71,7 +71,7 @@ Output: 띄어쓰기없이🙅‍♂️그냥🤷다💯붙여서🔗써도✍�
 
 # --- 2. 스크롤 방지 콤팩트 UI ---
 st.markdown(
-    "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨ 주접 & 밈 이모티콘 변환기</p>", 
+    "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨이모지가 가득해</p>", 
     unsafe_allow_html=True
 )
 st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!🔍")
