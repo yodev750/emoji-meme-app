@@ -9,6 +9,23 @@ st.set_page_config(
     page_title="이모지가 가득해", page_icon="🎨", layout="centered"
 )
 
+st.markdown(
+    """
+    <style>
+    /* 상단 메뉴바 숨기기 (모바일에서 화면을 덜 가리게 함) */
+    header {visibility: hidden;}
+    /* 하단 Streamlit 워터마크 숨기기 */
+    footer {visibility: hidden;}
+    /* 앱 전체 위아래 여백을 극한으로 줄임 */
+    .block-container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 0rem !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # API 클라이언트 초기화
 if "GEMINI_API_KEY" in st.secrets:
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
