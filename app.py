@@ -71,66 +71,76 @@ Output: 띄어쓰기없이🙅‍♂️그냥🤷다💯붙여서🔗써도✍�
 
 # --- 스크롤 방지 콤팩트 UI ---
 st.markdown(
-    "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨이모지가 가득해✨</p>", 
+    "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨ 주접 & 밈 이모티콘 변환기</p>", 
     unsafe_allow_html=True
 )
 st.caption("평범한 문장을 화려한✨이모지로📝채워드립니다!🔍")
 
-user_input = st.text_area(
-    "입력창",
-    label_visibility="collapsed",
-    placeholder="변환할 문장을 입력하세요 최대 300자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
-    height=100, 
-    key="my_text_input",
-    max_chars=1000
-)
-
+# 💡 1. 텍스트 지우기를 위해 'input_text' 세션 상태 추가
+if "input_text" not in st.session_state:
+    st.session_state.input_text = ""
 if "last_submit_time" not in st.session_state:
     st.session_state.last_submit_time = 0
-
 if "result_text" not in st.session_state:
     st.session_state.result_text = ""
 
-if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
-    # 세이프 박스 60px 유지
-    safe_box = st.container(height=60, border=False)
+# 넉넉한 글자 제한으로 복사/붙여넣기 튕김 방지
+user_input = st.text_area(
+    "입력창",
+    label_visibility="collapsed",
+    placeholder="변환할 문장을 입력하세요 (최대 300자까지만 변환됩니다 / 긴 글 복붙 환영!)",
+    height=120, 
+    max_chars=1000,
+    key="input_text",  # 💡 2. 입력창을 위 세션 상태와 연결
+)
 
+# --- 3. 버튼 동작 및 안전장치 로직 ---
+
+# 💡 3. 초기화(지우기) 버튼을 눌렀을 때 실행될 함수
+def clear_text():
+    st.session_state.input_text = ""
+    st.session_state.result_text = ""
+
+# 버튼 영역을 4:1 비율로 나란히 배치
+btn_col1, btn_col2 = st.columns([4, 1])
+
+with btn_col1:
+    submit_btn = st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True)
+with btn_col2:
+    st.button("🔄 지우기", on_click=clear_text, use_container_width=True)
+
+# 기존 st.button 부분 대신 submit_btn을 확인
+if submit_btn:
+    safe_box = st.container(height=120, border=False)
+    
     current_time = time.time()
     time_passed = current_time - st.session_state.last_submit_time
-    cooldown_seconds = 5 # 5초 쿨다운
+    cooldown_seconds = 5
 
     clean_input = user_input.strip()
 
     if time_passed < cooldown_seconds:
-        remaining_time = cooldown_seconds - time_passed
-        st.toast(f"⏳ {remaining_time:.0f}초 동안 기다려주세요!")
-
+        remaining_time = int(cooldown_seconds - time_passed)
+        alert_msg = safe_box.error(f"🚨 앗! 변환 후 {cooldown_seconds}초가 지나야 합니다. ({remaining_time}초 남음)")
+        time.sleep(2)
+        alert_msg.empty()
+        
     elif not clean_input:
-        st.toast("문장을 입력해주세요!")
-
+        warning_msg = safe_box.warning("문장을 입력해주세요!")
+        time.sleep(2)
+        warning_msg.empty()
+        
     else:
         if len(clean_input) > 300:
-            st.toast("🚨 300자가 넘는 문장은 앞부분만 잘라서 변환합니다!")
+            len_warning = safe_box.warning("🚨 300자가 넘는 텍스트는 앞부분만 잘라서 변환합니다!")
             clean_input = clean_input[:300]
+            time.sleep(2)
+            len_warning.empty()
             
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
                 new_result = process_full_sentence(clean_input)
                 st.session_state["result_area"] = new_result
                 st.session_state.result_text = new_result
-
+                
         st.session_state.last_submit_time = time.time()
-
-if st.session_state.get("result_text"):
-    st.markdown("**👇 변환 결과**")
-    
-    col1, col2 = st.columns([5, 1])
-    with col1:
-        edited_text = st.text_area(
-            "결과창",
-            label_visibility="collapsed",
-            height=140,
-            key="result_area",
-        )
-    with col2:
-        st_copy_to_clipboard(edited_text, before_copy_label="📋 복사")
