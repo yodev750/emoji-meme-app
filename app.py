@@ -80,7 +80,7 @@ user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
     placeholder="변환할 문장을 입력하세요 최대 300자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
-    height=68, 
+    height=88, 
     key="my_text_input",
     max_chars=300
 )
@@ -125,7 +125,7 @@ if st.session_state.get("result_text"):
         edited_text = st.text_area(
             "결과창",
             label_visibility="collapsed",
-            height=100,
+            height=120,
             key="result_area",
         )
     with col2:
