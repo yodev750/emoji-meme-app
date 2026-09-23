@@ -69,10 +69,6 @@ Output: 띄어쓰기없이🙅‍♂️그냥🤷다💯붙여서🔗써도✍�
         else:
             return f"🚨 에러 발생!!!! 잠시 후 다시 시도해주세요 😭"
 
-def limit_text_length():
-    if len(st.session_state.my_text_input) > 300:
-        st.session_state.my_text_input = st.session_state.my_text_input[:300]
-
 # --- 스크롤 방지 콤팩트 UI ---
 st.markdown(
     "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨이모지가 가득해✨</p>", 
@@ -86,14 +82,7 @@ user_input = st.text_area(
     placeholder="변환할 문장을 입력하세요 최대 300자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
     height=68, 
     key="my_text_input",
-    on_change=limit_text_length
-)
-
-# 💡 4. 기존 max_chars 대신, 텍스트 입력창 바로 아래에 예쁜 카운터 띄우기
-current_length = len(st.session_state.my_text_input)
-st.markdown(
-    f"<div style='text-align: right; font-size: 0.8rem; color: gray; margin-top: -10px; margin-bottom: 10px;'>{current_length} / 300</div>", 
-    unsafe_allow_html=True
+    max_chars=300
 )
 
 if "last_submit_time" not in st.session_state:
