@@ -80,9 +80,9 @@ user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
     placeholder="변환할 문장을 입력하세요 최대 300자 입력 가능합니다(예: 오늘 너무 피곤해서 치킨 먹어야겠어)",
-    height=88, 
+    height=100, 
     key="my_text_input",
-    max_chars=300
+    max_chars=1000
 )
 
 if "last_submit_time" not in st.session_state:
@@ -105,6 +105,9 @@ if st.button("🚀 이모티콘 듬뿍 넣기", use_container_width=True):
         time.sleep(2)      # 2초 동안 화면에 유지합니다.
         alert_msg.empty()  
     elif user_input.strip():
+        if len(user_input) > 300:
+            st.toast("🚨 300자가 넘는 문장은 앞부분만 잘라서 변환합니다!")
+            user_input = user_input[:300]
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
                 new_result = process_full_sentence(user_input)
