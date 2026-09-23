@@ -69,7 +69,7 @@ Output: 띄어쓰기없이🙅‍♂️그냥🤷다💯붙여서🔗써도✍�
         else:
             return f"🚨 에러 발생!!!! 잠시 후 다시 시도해주세요 😭"
 
-# --- 스크롤 방지 콤팩트 UI ---
+# --- 2. 스크롤 방지 콤팩트 UI ---
 st.markdown(
     "<p style='font-size: 1.6rem; font-weight: bold; margin-bottom: 0px;'>✨ 주접 & 밈 이모티콘 변환기</p>", 
     unsafe_allow_html=True
@@ -90,7 +90,7 @@ user_input = st.text_area(
     label_visibility="collapsed",
     placeholder="변환할 문장을 입력하세요 (최대 300자까지만 변환됩니다 / 긴 글 복붙 환영!)",
     height=120, 
-    max_chars=1000,
+    max_chars=1500,
     key="input_text",  # 💡 2. 입력창을 위 세션 상태와 연결
 )
 
@@ -144,3 +144,17 @@ if submit_btn:
                 st.session_state.result_text = new_result
                 
         st.session_state.last_submit_time = time.time()
+
+if st.session_state.get("result_text"):
+    st.markdown("**👇 변환 결과**")
+    
+    col1, col2 = st.columns([5, 1])
+    with col1:
+        edited_text = st.text_area(
+            "결과창",
+            label_visibility="collapsed",
+            height=180,
+            key="result_area",
+        )
+    with col2:
+        st_copy_to_clipboard(edited_text, before_copy_label="📋 복사")
