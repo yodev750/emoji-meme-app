@@ -87,9 +87,9 @@ if "result_text" not in st.session_state:
 user_input = st.text_area(
     "입력창",
     label_visibility="collapsed",
-    placeholder="문장을 입력하면 이모지가 듬뿍 들어가도록 변환됩니다! (최대 300자)",
+    placeholder="문장을 입력하면 이모지가 듬뿍 들어간 밈으로 변환됩니다! (최대 1000자)",
     height=120, 
-    max_chars=1500,
+    max_chars=1000,
     key="input_text",
 )
 
@@ -111,7 +111,7 @@ if submit_btn:
     
     current_time = time.time()
     time_passed = current_time - st.session_state.last_submit_time
-    cooldown_seconds = 5
+    cooldown_seconds = 10
     clean_input = user_input.strip()
 
     if time_passed < cooldown_seconds:
@@ -122,9 +122,9 @@ if submit_btn:
         st.toast("문장을 입력해주세요!")
         
     else:
-        if len(clean_input) > 300:
-            st.toast("🚨 300자가 넘는 텍스트는 앞부분만 잘라서 변환합니다!")
-            clean_input = clean_input[:300]
+        if len(clean_input) > 1000:
+            st.toast("🚨 1000자가 넘는 텍스트는 앞부분만 잘라서 변환합니다!")
+            clean_input = clean_input[:1000]
             
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
