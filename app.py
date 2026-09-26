@@ -156,8 +156,9 @@ if st.session_state.get("result_text"):
     with copy_col1:
         # 컴포넌트 충돌을 막기 위해 key 값을 지정합니다.
         st_copy_to_clipboard(current_result, before_copy_label="📋 전체 복사", key="copy_all")
-        
-    with copy_col2:
-        # 💡 3. 앞부분 100자까지만 자른 텍스트를 넘겨줍니다.
-        short_result = current_result[:100]
-        st_copy_to_clipboard(short_result, before_copy_label="✂️ 100자 복사", key="copy_short")
+
+    if len(current_result) > 100:
+        with copy_col2:
+            # 💡 3. 앞부분 100자까지만 자른 텍스트를 넘겨줍니다.
+            short_result = current_result[:100]
+            st_copy_to_clipboard(short_result, before_copy_label="✂️ 100자 복사", key="copy_short")
