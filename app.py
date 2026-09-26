@@ -128,7 +128,9 @@ if submit_btn:
             
         with safe_box:
             with st.spinner("✨ 찰떡같은 이모지를 고르는 중..."):
-                new_result = process_full_sentence(clean_input)
+                raw_result = process_full_sentence(clean_input)
+                # 💡 1. 결과에서 모든 띄어쓰기(공백)를 강제로 없앱니다.
+                new_result = raw_result.replace(" ", "")
                 st.session_state["result_area"] = new_result
                 st.session_state.result_text = new_result
                 
@@ -147,9 +149,15 @@ if st.session_state.get("result_text"):
     )
     
     # 2. 결과창 바로 아래, 왼쪽 정렬로 복사 버튼을 배치하기 위해 컬럼 분할
-    copy_col1, copy_col2 = st.columns([3, 7]) # 버튼이 너무 좁아 보이면 3:7 비율 추천
+    copy_col1, copy_col2, empty_col = st.columns([2, 2, 6])
+    
+    current_result = st.session_state.get("result_area", st.session_state.result_text)
     
     with copy_col1:
-        # 3. 화면에 있는 최신 결과 텍스트를 가져와서 복사 버튼과 연결
-        current_result = st.session_state.get("result_area", st.session_state.result_text)
-        st_copy_to_clipboard(current_result, before_copy_label="📋 복사")
+        # 컴포넌트 충돌을 막기 위해 key 값을 지정합니다.
+        st_copy_to_clipboard(current_result, before_copy_label="📋 전체 복사", key="copy_all")
+        
+    with copy_col2:
+        # 💡 3. 앞부분 100자까지만 자른 텍스트를 넘겨줍니다.
+        short_result = current_result[:100]
+        st_copy_to_clipboard(short_result, before_copy_label="✂️ 100자 복사", key="copy_short")
